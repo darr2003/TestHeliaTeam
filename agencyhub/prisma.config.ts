@@ -1,8 +1,11 @@
 
 import dotenv from "dotenv";
-import { defineConfig, env } from "prisma/config";
+import { defineConfig } from "prisma/config";
 
 dotenv.config({ path: ".env.local" });
+
+const fallbackUrl =
+  process.env.DATABASE_URL ?? "postgresql://user:pass@localhost:5432/agencyhub";
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
@@ -11,7 +14,7 @@ export default defineConfig({
   },
   engine: "classic",
   datasource: {
-    url: env("DATABASE_URL"),
-    directUrl: env("DIRECT_URL"),
+    url: fallbackUrl,
+    directUrl: process.env.DIRECT_URL ?? fallbackUrl,
   },
 });
