@@ -1,0 +1,4 @@
+# macOS
+.DS_Store
+
+# Las reglas de la app viven en agencyhub/.gitignore, relativas a esa carpeta.

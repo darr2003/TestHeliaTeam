@@ -1,0 +1,270 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum UserRole {
+  admin
+  editor
+}
+
+enum Currency {
+  CLP
+  USD
+}
+
+enum Platform {
+  meta_ads
+  google_ads
+  linkedin_ads
+  youtube_ads
+  tiktok_ads
+  other
+}
+
+enum SyncPlatform {
+  meta_ads
+  google_ads
+}
+
+enum ConnectionStatus {
+  success
+  error
+  pending
+}
+
+enum SyncType {
+  scheduled
+  manual
+}
+
+enum SyncStatus {
+  started
+  success
+  partial
+  error
+}
+
+enum AlertType {
+  overspend
+  low_budget
+  abnormal_pace
+  connection_error
+}
+
+enum AlertSeverity {
+  warning
+  critical
+}
+
+enum SpendSource {
+  api_sync
+  manual
+}
+
+model User {
+  id            String   @id @default(uuid()) @db.Uuid
+  name          String
+  email         String   @unique
+  passwordHash  String?  @map("password_hash")
+  role          UserRole @default(editor)
+  isActive      Boolean  @default(true) @map("is_active")
+  lastLoginAt   DateTime? @map("last_login_at")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  accounts      Account[]
+  budgetPlans   BudgetPlan[]
+  exchangeRates ExchangeRate[]
+
+  @@map("users")
+}
+
+model Account {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  color     String
+  currency  Currency
+
+  // --- Ficha de cliente ---
+  legalName     String?   @map("legal_name")
+  industry      String?
+  website       String?
+  contactName   String?   @map("contact_name")
+  contactEmail  String?   @map("contact_email")
+  contactPhone  String?   @map("contact_phone")
+  relationStart DateTime? @map("relation_start") @db.Date
+  notes         String?
+
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdBy String   @map("created_by") @db.Uuid
+
+  creator             User                 @relation(fields: [createdBy], references: [id])
+  platformConnections PlatformConnection[]
+  budgetPlans         BudgetPlan[]
+  spendRecords        SpendRecord[]
+  alerts              Alert[]
+  competitors         Competitor[]
+  reports             Report[]
+
+  @@map("accounts")
+}
+
+model PlatformConnection {
+  id                String           @id @default(uuid()) @db.Uuid
+  accountId         String           @map("account_id") @db.Uuid
+  platform          SyncPlatform
+  externalAccountId String           @map("external_account_id")
+  accessToken       String           @map("access_token")
+  refreshToken      String?          @map("refresh_token")
+  tokenExpiresAt    DateTime?        @map("token_expires_at")
+  isActive          Boolean          @default(true) @map("is_active")
+  lastSyncAt        DateTime?        @map("last_sync_at")
+  lastSyncStatus    ConnectionStatus @default(pending) @map("last_sync_status")
+  lastSyncError     String?          @map("last_sync_error")
+  createdAt         DateTime         @default(now()) @map("created_at")
+
+  account  Account   @relation(fields: [accountId], references: [id])
+  syncLogs SyncLog[]
+
+  @@map("platform_connections")
+}
+
+model BudgetPlan {
+  id             String   @id @default(uuid()) @db.Uuid
+  accountId      String   @map("account_id") @db.Uuid
+  platform       Platform
+  month          Int
+  year           Int
+  plannedAmount  Decimal  @map("planned_amount") @db.Decimal(15, 2)
+  currency       Currency
+  notes          String?
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+  createdBy      String   @map("created_by") @db.Uuid
+
+  account Account @relation(fields: [accountId], references: [id])
+  creator User    @relation(fields: [createdBy], references: [id])
+
+  @@unique([accountId, platform, month, year])
+  @@map("budget_plans")
+}
+
+model SpendRecord {
+  id               String      @id @default(uuid()) @db.Uuid
+  accountId        String      @map("account_id") @db.Uuid
+  platform         SyncPlatform
+  date             DateTime    @db.Date
+  amountSpent      Decimal     @map("amount_spent") @db.Decimal(15, 2)
+  currency         String
+  amountSpentLocal Decimal?    @map("amount_spent_local") @db.Decimal(15, 2)
+  impressions      BigInt?
+  clicks           Int?
+  conversions      Int?
+  source           SpendSource @default(api_sync)
+  syncBatchId      String?     @map("sync_batch_id") @db.Uuid
+  createdAt        DateTime    @default(now()) @map("created_at")
+  updatedAt        DateTime    @updatedAt @map("updated_at")
+
+  account Account @relation(fields: [accountId], references: [id])
+
+  @@unique([accountId, platform, date, source])
+  @@map("spend_records")
+}
+
+model SyncLog {
+  id                     String       @id @default(uuid()) @db.Uuid
+  platformConnectionId   String       @map("platform_connection_id") @db.Uuid
+  syncType               SyncType     @map("sync_type")
+  status                 SyncStatus   @default(started)
+  recordsSynced          Int          @default(0) @map("records_synced")
+  errorMessage           String?      @map("error_message")
+  startedAt              DateTime     @default(now()) @map("started_at")
+  completedAt            DateTime?    @map("completed_at")
+
+  platformConnection PlatformConnection @relation(fields: [platformConnectionId], references: [id])
+
+  @@map("sync_logs")
+}
+
+model Alert {
+  id             String        @id @default(uuid()) @db.Uuid
+  accountId      String        @map("account_id") @db.Uuid
+  platform       Platform?
+  alertType      AlertType     @map("alert_type")
+  severity       AlertSeverity
+  message        String
+  thresholdValue Decimal       @map("threshold_value") @db.Decimal(10, 4)
+  currentValue   Decimal       @map("current_value") @db.Decimal(10, 4)
+  isRead         Boolean       @default(false) @map("is_read")
+  isDismissed    Boolean       @default(false) @map("is_dismissed")
+  createdAt      DateTime      @default(now()) @map("created_at")
+
+  account Account @relation(fields: [accountId], references: [id])
+
+  @@map("alerts")
+}
+
+model ExchangeRate {
+  id           String   @id @default(uuid()) @db.Uuid
+  fromCurrency String   @default("USD") @map("from_currency")
+  toCurrency   String   @default("CLP") @map("to_currency")
+  month        Int
+  year         Int
+  rate         Decimal  @db.Decimal(12, 4)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  createdBy    String   @map("created_by") @db.Uuid
+
+  creator User @relation(fields: [createdBy], references: [id])
+
+  @@unique([fromCurrency, toCurrency, month, year])
+  @@map("exchange_rates")
+}
+
+enum ReportType {
+  diario
+  semanal
+}
+
+model Competitor {
+  id        String   @id @default(uuid()) @db.Uuid
+  accountId String   @map("account_id") @db.Uuid
+  name      String
+  website   String?
+  notes     String?
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  account Account @relation(fields: [accountId], references: [id])
+
+  @@unique([accountId, name])
+  @@map("competitors")
+}
+
+model Report {
+  id        String     @id @default(uuid()) @db.Uuid
+  accountId String     @map("account_id") @db.Uuid
+  date      DateTime   @db.Date
+  type      ReportType
+  // Exactamente uno de los dos: R2 si esta configurado, si no inline en DB.
+  storageKey String?   @map("storage_key")
+  content   String?
+  version   Int        @default(1)
+  bytes     Int?
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+
+  account Account @relation(fields: [accountId], references: [id])
+
+  @@unique([accountId, date, type])
+  @@index([accountId, date])
+  @@map("reports")
+}

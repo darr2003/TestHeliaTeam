@@ -1,0 +1,267 @@
+/* ==========================================================================
+   Cluster Media — Design Tokens
+   colors_and_type.css
+   --------------------------------------------------------------------------
+   Single source of truth for color, type, spacing, radius, shadow, motion.
+   Import this in any HTML/JSX surface that needs to look like Cluster Media.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* ——— Color · Brand ——— */
+  --cm-accent: #7866FA;          /* Cluster Purple — único acento de marca */
+  --cm-accent-soft: color-mix(in oklab, var(--cm-accent) 14%, white);
+  --cm-accent-ink: color-mix(in oklab, var(--cm-accent) 60%, #1a1a1a);
+
+  /* ——— Color · Neutrals ——— */
+  --cm-ink: #0B0B0F;             /* Texto / fondos oscuros */
+  --cm-ink-60: #4A4A54;          /* Texto secundario */
+  --cm-ink-40: #8B8B95;          /* Texto terciario / captions */
+  --cm-paper: #FFFFFF;            /* Fondo principal */
+  --cm-bone: #F5F4F1;            /* Fondo secundario / placeholders */
+  --cm-rule: #E7E6E2;            /* Líneas divisorias */
+
+  /* ——— Color · Dark mode ——— */
+  --cm-dark-paper: #0B0B0F;
+  --cm-dark-bone: #15151A;
+  --cm-dark-rule: #26262C;
+  --cm-dark-ink: #F3F2EE;
+  --cm-dark-ink-60: #B6B5B0;
+  --cm-dark-ink-40: #75747A;
+
+  /* ——— Type · Families ——— */
+  --cm-sans: 'Manrope', -apple-system, system-ui, sans-serif;
+  --cm-mono: 'JetBrains Mono', ui-monospace, 'Consolas', monospace;
+
+  /* ——— Type · Scale (slides 1920×1080 / desktop) ——— */
+  --cm-display-xl: clamp(72px, 8vw, 132px);
+  --cm-display-l:  clamp(54px, 6vw, 108px);
+  --cm-display-m:  clamp(40px, 4.4vw, 72px);
+  --cm-h1:         clamp(36px, 3.4vw, 54px);
+  --cm-h2:         clamp(28px, 2.6vw, 40px);
+  --cm-h3:         24px;
+  --cm-lead:       22px;
+  --cm-body:       17px;
+  --cm-caption:    14px;
+  --cm-eyebrow:    11px;
+
+  /* ——— Type · Weight ——— */
+  --cm-w-display: 800;
+  --cm-w-bold: 700;
+  --cm-w-medium: 500;
+  --cm-w-regular: 400;
+  --cm-w-light: 300;
+  --cm-w-thin: 200;
+
+  /* ——— Type · Tracking ——— */
+  --cm-tr-display: -0.038em;
+  --cm-tr-h1: -0.025em;
+  --cm-tr-h3: -0.018em;
+  --cm-tr-mono: 0.14em;
+
+  /* ——— Spacing scale ——— */
+  --cm-s-1: 4px;
+  --cm-s-2: 8px;
+  --cm-s-3: 12px;
+  --cm-s-4: 16px;
+  --cm-s-5: 24px;
+  --cm-s-6: 32px;
+  --cm-s-7: 48px;
+  --cm-s-8: 64px;
+  --cm-s-9: 96px;
+  --cm-s-10: 120px;
+
+  /* ——— Radius ——— */
+  --cm-r-sm: 4px;       /* placeholders, inputs cuadrados */
+  --cm-r-md: 14px;      /* cards de tweaks/menús flotantes */
+  --cm-r-pill: 100px;   /* CTAs, badges, inputs pill */
+
+  /* ——— Shadow / elevation ——— */
+  --cm-shadow-sm: 0 4px 12px -6px rgba(11,11,15,.10);
+  --cm-shadow-md: 0 10px 30px -10px rgba(11,11,15,.18);
+  --cm-shadow-lg: 0 24px 60px -24px rgba(11,11,15,.24);
+
+  /* ——— Borders ——— */
+  --cm-border: 1px solid var(--cm-rule);
+  --cm-border-strong: 1px solid var(--cm-ink);
+
+  /* ——— Motion ——— */
+  --cm-ease-out: cubic-bezier(.2,.8,.2,1);
+  --cm-d-fast: 200ms;
+  --cm-d-base: 250ms;
+  --cm-d-reveal: 800ms;
+}
+
+[data-theme="dark"] {
+  --cm-paper: var(--cm-dark-paper);
+  --cm-bone: var(--cm-dark-bone);
+  --cm-rule: var(--cm-dark-rule);
+  --cm-ink: var(--cm-dark-ink);
+  --cm-ink-60: var(--cm-dark-ink-60);
+  --cm-ink-40: var(--cm-dark-ink-40);
+}
+
+/* ==========================================================================
+   Semantic element styles — opt in by adding `cm` class to <body>
+   ========================================================================== */
+.cm, .cm * { box-sizing: border-box; }
+.cm {
+  font-family: var(--cm-sans);
+  font-weight: var(--cm-w-light);
+  color: var(--cm-ink);
+  background: var(--cm-paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.cm h1, .cm .cm-h1 {
+  font-family: var(--cm-sans);
+  font-weight: var(--cm-w-display);
+  font-size: var(--cm-h1);
+  letter-spacing: var(--cm-tr-h1);
+  line-height: 1.05;
+  text-wrap: balance;
+}
+.cm h2, .cm .cm-h2 { font-weight: var(--cm-w-bold); font-size: var(--cm-h2); letter-spacing: -.02em; line-height: 1.1; }
+.cm h3, .cm .cm-h3 { font-weight: var(--cm-w-bold); font-size: var(--cm-h3); letter-spacing: var(--cm-tr-h3); line-height: 1.15; }
+.cm p, .cm .cm-body { font-size: var(--cm-body); line-height: 1.55; color: var(--cm-ink-60); font-weight: var(--cm-w-regular); }
+.cm .cm-lead { font-size: var(--cm-lead); line-height: 1.5; color: var(--cm-ink-60); font-weight: var(--cm-w-regular); }
+
+.cm .cm-display-xl { font-size: var(--cm-display-xl); font-weight: var(--cm-w-display); letter-spacing: var(--cm-tr-display); line-height: .92; }
+.cm .cm-display-l  { font-size: var(--cm-display-l);  font-weight: var(--cm-w-display); letter-spacing: -0.035em; line-height: .94; }
+
+/* Italic + accent — palabra protagónica dentro de un headline */
+.cm .cm-thin { font-weight: var(--cm-w-thin); font-style: italic; color: var(--cm-accent); }
+
+/* Punto de acento al final de un título */
+.cm .cm-dot {
+  display: inline-block;
+  width: .16em; height: .16em;
+  background: var(--cm-accent);
+  border-radius: 50%;
+  transform: translateY(-.08em);
+  margin-left: .06em;
+}
+
+/* Eyebrow editorial */
+.cm .cm-eyebrow {
+  font-family: var(--cm-mono);
+  font-size: var(--cm-eyebrow);
+  font-weight: var(--cm-w-medium);
+  letter-spacing: var(--cm-tr-mono);
+  text-transform: uppercase;
+  color: var(--cm-ink-60);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.cm .cm-eyebrow::before {
+  content: "";
+  width: 20px;
+  height: 1px;
+  background: var(--cm-accent);
+}
+
+/* Caption / metadata mono */
+.cm .cm-mono { font-family: var(--cm-mono); font-size: var(--cm-caption); letter-spacing: 0.06em; color: var(--cm-ink-40); }
+
+/* CTA primary — pill negro */
+.cm .cm-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 26px;
+  border-radius: var(--cm-r-pill);
+  background: var(--cm-ink);
+  color: var(--cm-paper);
+  font-family: var(--cm-sans);
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: transform var(--cm-d-fast), background var(--cm-d-fast);
+}
+.cm .cm-btn:hover { transform: translateY(-2px); }
+
+.cm .cm-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 4px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--cm-ink-60);
+  border-bottom: 1px solid transparent;
+  transition: color var(--cm-d-fast), border-color var(--cm-d-fast);
+  cursor: pointer;
+  background: none;
+}
+.cm .cm-btn-ghost:hover { color: var(--cm-ink); border-color: var(--cm-ink); }
+
+/* Badge with live dot */
+.cm .cm-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: var(--cm-border);
+  border-radius: var(--cm-r-pill);
+  font-family: var(--cm-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cm-ink-60);
+}
+.cm .cm-live {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--cm-accent);
+  position: relative;
+}
+.cm .cm-live::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1px solid var(--cm-accent);
+  opacity: .5;
+  animation: cm-pulse 2.2s infinite;
+}
+@keyframes cm-pulse {
+  0%   { transform: scale(1);   opacity: .6; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+/* Halo radial (acento difuso de fondo) */
+.cm .cm-halo {
+  position: absolute;
+  pointer-events: none;
+  background: radial-gradient(50% 50% at 50% 50%, color-mix(in oklab, var(--cm-accent) 30%, transparent), transparent 70%);
+  filter: blur(50px);
+  opacity: .7;
+}
+
+/* Crosshair decorativo */
+.cm .cm-crosshair {
+  position: absolute;
+  pointer-events: none;
+  width: 10px; height: 10px;
+}
+.cm .cm-crosshair::before,
+.cm .cm-crosshair::after {
+  content: "";
+  position: absolute;
+  background: var(--cm-ink);
+}
+.cm .cm-crosshair::before { top: 50%; left: 0; right: 0; height: 1px; transform: translateY(-.5px); }
+.cm .cm-crosshair::after  { left: 50%; top: 0; bottom: 0; width: 1px;  transform: translateX(-.5px); }
+
+/* Placeholder rayado (foto pendiente) */
+.cm .cm-placeholder {
+  position: relative;
+  background:
+    repeating-linear-gradient(135deg, transparent 0 12px, color-mix(in oklab, var(--cm-ink) 4%, transparent) 12px 13px),
+    var(--cm-bone);
+  border-radius: var(--cm-r-sm);
+}

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AgencyHub — Pantallas · Cluster Media</title>
+<link rel="stylesheet" href="colors_and_type.css"/>
+<link rel="stylesheet" href="app.css"/>
+</head>
+<body>
+  <div id="root"></div>
+
+  <nav class="screen-anchors">
+    <div class="screen-anchors-title">Pantallas</div>
+    <a href="#login">00 / Login</a>
+    <a href="#dashboard">01 / Dashboard</a>
+    <a href="#detail">02 / Detalle</a>
+    <a href="#connections">03 / Conexiones</a>
+    <a href="#budgets">04 / Presupuestos</a>
+    <a href="#alerts">05 / Alarmas</a>
+    <a href="#reports">06 / Reporte</a>
+    <a href="#users">07 / Usuarios</a>
+  </nav>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script src="data.js"></script>
+  <script type="text/babel" src="components.jsx"></script>
+  <script type="text/babel" src="dashboard.jsx"></script>
+  <script type="text/babel" src="account-detail.jsx"></script>
+  <script type="text/babel" src="connections.jsx"></script>
+  <script type="text/babel" src="login.jsx"></script>
+  <script type="text/babel" src="budgets.jsx"></script>
+  <script type="text/babel" src="alerts.jsx"></script>
+  <script type="text/babel" src="reports.jsx"></script>
+  <script type="text/babel" src="users.jsx"></script>
+
+  <script type="text/babel">
+    function App() {
+      return (
+        <div className="screens-root">
+          {/* 00 — Login */}
+          <section className="screen-section" id="login">
+            <div className="screen-eyebrow">
+              <span className="num">00 / <strong>LOGIN</strong></span>
+              <span className="desc">Acceso interno · sin registro público.</span>
+            </div>
+            <BrowserChrome
+              url="agencyhub.clustermedia.cl/login"
+              title="Iniciar sesión · AgencyHub"
+              screenLabel="00 Login"
+            >
+              <Login/>
+            </BrowserChrome>
+          </section>
+
+          {/* 01 — Dashboard */}
+          <section className="screen-section" id="dashboard">
+            <div className="screen-eyebrow">
+              <span className="num">01 / <strong>DASHBOARD</strong></span>
+              <span className="desc">Plan vs real, todas las cuentas. Punto de entrada de la app.</span>
+            </div>
+            <BrowserChrome
+              url="agencyhub.clustermedia.cl/dashboard"
+              title="Dashboard · AgencyHub"
+              screenLabel="01 Dashboard"
+            >
+              <Dashboard/>
+            </BrowserChrome>
+          </section>
+
+          {/* 02 — Account detail */}
+          <section className="screen-section" id="detail">
+            <div className="screen-eyebrow">
+              <span className="num">02 / <strong>DETALLE DE CUENTA</strong></span>
+              <span className="desc">CHC · abril 2026 · plan vs real por canal, ritmo y gasto acumulado diario.</span>
+            </div>
+            <BrowserChrome
+              url="agencyhub.clustermedia.cl/accounts/chc"
+              title="CHC · AgencyHub"
+              screenLabel="02 Detalle CHC"
+            >
+              <AccountDetail/>
+            </BrowserChrome>
+          </section>
+
+          {/* 03 — Connections */}
+          <section className="screen-section" id="connections">
+            <div className="screen-eyebrow">
+              <span className="num">03 / <strong>CONEXIONES</strong></span>
+              <span className="desc">Meta Ads + Google Ads por cuenta. Sólo administradores. Tokens encriptados.</span>
+            </div>
+            <BrowserChrome
+              url="agencyhub.clustermedia.cl/connections"
+              title="Conexiones · AgencyHub"
+              screenLabel="03 Conexiones"
+            >
+              <Connections/>
+            </BrowserChrome>
+          </section>
+
+          {/* 04 — Budgets */}
+          <section className="screen-section" id="budgets">
+            <div className="screen-eyebrow">
+              <span className="num">04 / <strong>PRESUPUESTOS</strong></span>
+              <span className="desc">Plan mensual por cuenta y canal. Edición inline, copia desde mes anterior.</span>
+            </div>
+            <BrowserChrome url="agencyhub.clustermedia.cl/budgets" title="Presupuestos · AgencyHub" screenLabel="04 Presupuestos">
+              <Budgets/>
+            </BrowserChrome>
+          </section>
+
+          {/* 05 — Alerts */}
+          <section className="screen-section" id="alerts">
+            <div className="screen-eyebrow">
+              <span className="num">05 / <strong>ALARMAS</strong></span>
+              <span className="desc">Sobregasto · presupuesto bajo · ritmo anormal. Bandeja con filtros y acciones.</span>
+            </div>
+            <BrowserChrome url="agencyhub.clustermedia.cl/alerts" title="Alarmas · AgencyHub" screenLabel="05 Alarmas">
+              <Alerts/>
+            </BrowserChrome>
+          </section>
+
+          {/* 06 — Reports */}
+          <section className="screen-section" id="reports">
+            <div className="screen-eyebrow">
+              <span className="num">06 / <strong>REPORTE MENSUAL</strong></span>
+              <span className="desc">Vista del PDF exportable · CHC abril 2026.</span>
+            </div>
+            <BrowserChrome url="agencyhub.clustermedia.cl/reports/chc/2026-04" title="Reporte CHC · AgencyHub" screenLabel="06 Reporte">
+              <Reports/>
+            </BrowserChrome>
+          </section>
+
+          {/* 07 — Users */}
+          <section className="screen-section" id="users">
+            <div className="screen-eyebrow">
+              <span className="num">07 / <strong>USUARIOS</strong></span>
+              <span className="desc">Equipo Cluster · admin only. Roles y permisos.</span>
+            </div>
+            <BrowserChrome url="agencyhub.clustermedia.cl/users" title="Usuarios · AgencyHub" screenLabel="07 Usuarios">
+              <Users/>
+            </BrowserChrome>
+          </section>
+        </div>
+      );
+    }
+    ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+  </script>
+</body>
+</html>
